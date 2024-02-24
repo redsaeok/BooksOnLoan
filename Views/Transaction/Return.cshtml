@@ -1,0 +1,55 @@
+@model BooksOnLoan.Models.Transaction
+
+@{
+    ViewData["Title"] = "Deliver";
+    var book = ViewData["Book"] as Book;    
+}
+
+<h1>Return</h1>
+
+<h4>Transaction</h4>
+<hr />
+
+<h5>Title: @book!.Title</h5>
+<h5>Author: @book.Author</h5>
+<h5>Year Published: @book.YearPublished</h5>
+<hr />
+
+
+@if (ViewData["Message"] != null)
+{
+    <div class="text-danger">
+        @ViewData["Message"]
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Transaction" asp-action="Return" asp-route-id="@Model.TransactionId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TransactionId" />
+            <input type="hidden" asp-for="BookCodeNumber" value="@book.CodeNumber" class="form-control" />
+            <input asp-for="Username" type="hidden" value="@User.Identity!.Name" class="form-control" />
+            <input asp-for="HoldDate" type="hidden" value="@Model.HoldDate" class="form-control" />
+            <input asp-for="LoanStartDate" type="hidden" value="@Model.LoanStartDate" class="form-control" />
+            <input asp-for="LoanDueDate" type="hidden" value="@Model.LoanDueDate" class="form-control" />
+
+            <div class="form-group">
+                <label asp-for="ReturnDate" class="control-label"></label>
+                <input asp-for="ReturnDate" value='@DateTime.Now.ToString("MM-dd-yyyy")' class="form-control" />
+                <span asp-validation-for="ReturnDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Return" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

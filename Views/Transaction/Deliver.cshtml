@@ -1,0 +1,58 @@
+@model BooksOnLoan.Models.Transaction
+
+@{
+    ViewData["Title"] = "Deliver";
+    var book = ViewData["Book"] as Book;    
+}
+
+<h1>Deliver</h1>
+
+<h4>Transaction</h4>
+<hr />
+
+<h5>Title: @book!.Title</h5>
+<h5>Author: @book.Author</h5>
+<h5>Year Published: @book.YearPublished</h5>
+<hr />
+
+
+@if (ViewData["Message"] != null)
+{
+    <div class="text-danger">
+        @ViewData["Message"]
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Transaction" asp-action="Deliver" asp-route-id="@Model.TransactionId">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TransactionId" />
+            <input type="hidden" asp-for="BookCodeNumber" value="@book.CodeNumber" class="form-control" />
+            <input asp-for="Username" type="hidden" value="@Model.Username" class="form-control" />
+            <input asp-for="HoldDate" type="hidden" value="@Model.HoldDate" class="form-control" />
+            <input asp-for="ReturnDate" type="hidden" class="form-control" />
+            <div class="form-group">
+                <label asp-for="LoanStartDate" class="control-label"></label>
+                <input asp-for="LoanStartDate" value='@DateTime.Now.ToString("MM-dd-yyyy")' class="form-control" />
+                <span asp-validation-for="LoanStartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LoanDueDate" class="control-label"></label>
+                <input asp-for="LoanDueDate" value='@DateTime.Now.AddMonths(1).ToString("MM-dd-yyyy")' class="form-control" />
+                <span asp-validation-for="LoanDueDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Deliver" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

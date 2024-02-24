@@ -776,6 +776,193 @@ public IActionResult Create()
 
 #!markdown
 
+# Assigning Users To Roles
+
+#!markdown
+
+Created a sample data class that holds Users, Roles, and User/Role Assignments.
+
+#!markdown
+
+```csharp
+
+// Data/IdentitySeedData.cs
+
+public class IdentitySeedData
+{
+    public static async Task Initialize(ApplicationDbContext context,
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager)
+    {
+        context.Database.EnsureCreated();
+
+        string asdminRole = "Admin";
+        string memberRole = "Member";
+        string password4all = "P@$$w0rd";
+
+        if (await roleManager.FindByNameAsync(asdminRole) == null)
+        {
+            await roleManager.CreateAsync(new IdentityRole(asdminRole));
+        }
+
+        if (await roleManager.FindByNameAsync(memberRole) == null)
+        {
+            await roleManager.CreateAsync(new IdentityRole(memberRole));
+        }
+
+        if (await userManager.FindByNameAsync("aa@aa.aa") == null)
+        {
+            var user = new IdentityUser
+            {
+                UserName = "aa@aa.aa",
+                Email = "aa@aa.aa",
+                PhoneNumber = "6902341234"
+            };
+
+            var result = await userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                await userManager.AddPasswordAsync(user, password4all);
+                await userManager.AddToRoleAsync(user, asdminRole);
+            }
+        }
+
+        if (await userManager.FindByNameAsync("bb@bb.bb") == null)
+        {
+            var user = new IdentityUser
+            {
+                UserName = "bb@bb.bb",
+                Email = "bb@bb.bb",
+                PhoneNumber = "7788951456"
+            };
+
+            var result = await userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                await userManager.AddPasswordAsync(user, password4all);
+                await userManager.AddToRoleAsync(user, asdminRole);
+            }
+        }
+
+        if (await userManager.FindByNameAsync("mm@mm.mm") == null)
+        {
+            var user = new IdentityUser
+            {
+                UserName = "mm@mm.mm",
+                Email = "mm@mm.mm",
+                PhoneNumber = "6572136821"
+            };
+
+            var result = await userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                await userManager.AddPasswordAsync(user, password4all);
+                await userManager.AddToRoleAsync(user, memberRole);
+            }
+        }
+
+        if (await userManager.FindByNameAsync("dd@dd.dd") == null)
+        {
+            var user = new IdentityUser
+            {
+                UserName = "dd@dd.dd",
+                Email = "dd@dd.dd",
+                PhoneNumber = "6041234567"
+            };
+
+            var result = await userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                await userManager.AddPasswordAsync(user, password4all);
+                await userManager.AddToRoleAsync(user, memberRole);
+            }
+        }
+    }
+}
+```
+
+#!markdown
+
+In Program.cs, updated the AddIdentity row to include the IdentityRole type.
+
+#!markdown
+
+```csharp
+
+// Program.cs
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(
+    options =>
+    {
+        options.Stores.MaxLengthForKeys = 128;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddRoles<IdentityRole>()
+    .AddDefaultUI()
+    .AddDefaultTokenProviders();
+```
+
+#!markdown
+
+In Program.cs, added the code to seed the identity migration date.
+
+#!markdown
+
+```csharp
+
+// Program.cs
+
+using (var scope = app.Services.CreateScope()) {
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<ApplicationDbContext>();    
+    context.Database.Migrate();
+
+    var userMgr = services.GetRequiredService<UserManager<IdentityUser>>();  
+    var roleMgr = services.GetRequiredService<RoleManager<IdentityRole>>();  
+
+    IdentitySeedData.Initialize(context, userMgr, roleMgr).Wait();
+}
+```
+
+#!markdown
+
+Verified users and roles in the sqlite database.
+
+#!markdown
+
+```bash
+sqlite> select * from AspnetRoles;
+
+1||Admin|ADMIN
+2||Member|MEMBER
+
+sqlite> select * from aspnetUsers;
+
+f6ba57a8-57c6-4ab7-af9a-36f19afd6d19|0|044e7e75-8ab6-4c39-b687-83d22a9debd0|aa@aa.aa|1|1||AA@AA.AA|AA@AA.AA|AQAAAAIAAYagAAAAEEDnnSjoTsgzU0TRq+cUHvVmaZU4eRbDE+qN7mP6FO9cvwMZ7TwHmyswYpmBy+otew==||0|KOYU2XPZ75WFYBW6EDVJS6SN5ILSDJZZ|0|aa@aa.aa
+5e95d8d9-297c-48a4-b573-09ca68af540d|0|aecc7630-5c22-4d15-b165-84f7c706739a|mm@mm.mm|1|1||MM@MM.MM|MM@MM.MM|AQAAAAIAAYagAAAAEGFrnkWzsrhZ2pj+ABwgFS1Qvami9Z81uDqyaoyJuK9ubsjlC3AcBm8yi18Ghw3Aqg==||0|6PIZKKTC2TKKIBL3REQAX44XTWANUT3E|0|mm@mm.mm
+4c22893e-40f9-4ee6-82e5-9f2c7cdd68c2|0|f5d4ad1c-2b74-48a7-860a-b33223d30dee|bb@bb.bb|0|1||BB@BB.BB|BB@BB.BB|AQAAAAIAAYagAAAAELI+7mvrRQCaBbFoQ/f1LdfcGGdE4p4015YknEXSU11++S74nJyhOD+uuPpzZt3OUA==|7788951456|0|4ZAWXNMJW3WKDAK7VANFPPFDAQMCYT2I|0|bb@bb.bb
+c2620daf-e11c-4b4a-8d6c-6695a1c7f3c0|0|08b2eec5-90cb-4a23-859d-df96d8ab8c01|dd@dd.dd|0|1||DD@DD.DD|DD@DD.DD|AQAAAAIAAYagAAAAEN0HmXvMwzM34gWUb+B6s8aM49kforSbPBkWdP1yp9q88sodDX6xhR7VEkHBjgDA6Q==|6041234567|0|DM6RYAV7LZBNPF3P36TE3KYBY5MHPLYW|0|dd@dd.dd
+
+sqlite> select * from AspNetUserRoles;
+
+4c22893e-40f9-4ee6-82e5-9f2c7cdd68c2|1
+c2620daf-e11c-4b4a-8d6c-6695a1c7f3c0|2
+```
+
+#!markdown
+
+Actually this didn't work because the uses aa and mm already existed.  The role can be added directly in SQL too.
+
+#!markdown
+
+```bash
+sqlite> insert into AspNetUserRoles values ('f6ba57a8-57c6-4ab7-af9a-36f19afd6d19', 1);
+sqlite> insert into AspNetUserRoles values ('5e95d8d9-297c-48a4-b573-09ca68af540d', 2);
+```
+
+#!markdown
+
 # Adding Security to Menu
 
 #!markdown
@@ -829,7 +1016,30 @@ Locking Down the View
 
 #!markdown
 
+We can check for a role this way.
+
+#!markdown
+
+```html
+<!-- Views/Transaction/Index.cshtml -->
+
+@if( User.IsInRole("Admin"))
+{
+<a asp-action="Deliver" asp-route-id="@item.TransactionId">Deliver</a>      
+<a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a>
+}
+
+@if( User.IsInRole("Member"))
+{
+<a asp-action="Return" asp-route-id="@item.TransactionId">Return</a>                
+}
+```                
+
+#!markdown
+
 # Questions
+
+Why didn't we look au authenticate/authorize with roles?  Do we need to?
 
 How can you add individual authentication after you've created a project?
 

@@ -10,20 +10,27 @@ namespace BooksOnLoan.Models;
 public class Transaction
 {
     [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Display(Name = "Transaction ID")]
     public int TransactionId { get; set; }
     
+    [Required]
+    [Display(Name = "Book ID")]
     public int BookCodeNumber { get; set; }
 
     //public int TransactionTypeId { get; set; }
 
     public string? Username { get; set; }
 
+    [Display(Name = "Hold Date")]
     public DateOnly HoldDate { get; set; }
     
+    [Display(Name = "Loan Start Date")]
     public DateOnly? LoanStartDate { get; set; }
     
+    [Display(Name = "Due Date")]
     public DateOnly? LoanDueDate { get; set; }
 
+    [Display(Name = "Return Date")]
     public DateOnly? ReturnDate { get; set; }
 
     [ForeignKey("BookCodeNumber")]

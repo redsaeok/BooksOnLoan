@@ -1,15 +1,83 @@
 @model IEnumerable<BooksOnLoan.Models.Transaction>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Transaction History";
+    var overdueTransactions = ViewData["OverdueBooks"] as IEnumerable<Transaction>;
+    var requestTransactions = ViewData["HeldBooks"] as IEnumerable<Transaction>;
+    var outstandingTransactions = ViewData["SentBooks"] as IEnumerable<Transaction>;
+    var memberReserveBooks = ViewData["MemberReserveBooks"] as IEnumerable<Transaction>;
+    var memberHasBooks = ViewData["MemberHasBooks"] as IEnumerable<Transaction>;
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    
+    @if(ViewBag.OverdueCount > 0)
+    {
+        <P>You have Overdue books</P>
+        <script>
+            function overdueNotify() {
+                $(document).ready(function(){
+                    $('#receiveNoteModal').modal('show');
+                });
+            }
+
+            window.onload = overdueNotify;
+        </script>
+    }
+    <!-- a asp-action="Create">Create New</a -->
 </p>
-<table class="table">
+
+@if (User.IsInRole("Admin"))
+{
+    <h2>Overdue Books</h2>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanDueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book!.Title)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in overdueTransactions!)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LoanDueDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book!.Title)
+                    </td>
+                    <td>
+                        <div class="float-right">
+                        <a asp-controller="OverdueEmail" asp-action="SendOverdueNotice" asp-route-id="@item.TransactionId">Email Form</a>
+                        <a data-toggle="modal" data-target="#SendEmailModal" href="">Email Popup</a>
+                        <a href="mailto:@item.Username?subject=Overdue Book - @item.Book!.Title&body=Please return your book.">Email MailTo</a>
+                        <!--a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a-->
+                        <a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.TransactionId">Details</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    <h2>New Requests</h2>
+    <table class="table table-striped">
     <thead>
         <tr>
             <th>
@@ -19,47 +87,120 @@
                 @Html.DisplayNameFor(model => model.HoldDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LoanStartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LoanDueDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReturnDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Book)
+                @Html.DisplayNameFor(model => model.Book!.Title)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.HoldDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LoanStartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LoanDueDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ReturnDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Book.Author)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.TransactionId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a>
-            </td>
-        </tr>
+        @foreach (var item in requestTransactions!)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HoldDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book!.Title)
+                    </td>
+                    <td>
+                        <a asp-action="Deliver" asp-route-id="@item.TransactionId">Deliver</a>
+                        <a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.TransactionId">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 }
-    </tbody>
-</table>
+
+
+
+
+@if (User.IsInRole("Member"))
+{
+    <h2>Holds for for @User.Identity!.Name</h2>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HoldDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book!.Title)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @foreach (var item in memberReserveBooks!)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HoldDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book!.Title)
+                    </td>
+                    <td>                        
+                        <!--a asp-action="Return" asp-route-id="@item.TransactionId">Return</a-->
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+<h2>Books out on loan for @User.Identity!.Name</h2>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LoanDueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book!.Title)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @foreach (var item in memberHasBooks!)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Username)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LoanDueDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Book!.Title)
+                    </td>
+                    <td>                        
+                        <a asp-action="Return" asp-route-id="@item.TransactionId">Return</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+

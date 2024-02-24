@@ -1,56 +1,63 @@
 @model BooksOnLoan.Models.Transaction
 
 @{
-
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Reserve";    
+    var book = ViewData["Book"] as BooksOnLoan.Models.Book;
 }
 
-<h1>Create</h1>
+<h1>@ViewData["Title"]</h1>
 
 <h4>Transaction</h4>
 <hr />
+<h5>Title: @book.Title</h5>
+<h5>Author: @book.Author</h5>
+<h5>Year Published: @book.YearPublished</h5>
+<hr />
+
+@if (ViewData["Message"] != null)
+{
+    <div class="text-danger">
+        @ViewData["Message"]
+    </div>
+}
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Reserve">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="BookCodeNumber" class="control-label"></label>
-                <select asp-for="BookCodeNumber" class ="form-control" asp-items="ViewBag.BookCodeNumber"></select>
+                <input type="hidden" asp-for="BookCodeNumber" value="@book.CodeNumber" class="form-control" />
             </div>
-            <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
+            <div class="form-group">                
+                <input asp-for="Username" type="hidden" value="@User.Identity!.Name" class="form-control" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="HoldDate" class="control-label"></label>
-                <input asp-for="HoldDate" class="form-control" />
+                <input asp-for="HoldDate" value='@DateTime.Now.ToString("MM-dd-yyyy")' class="form-control" />
                 <span asp-validation-for="HoldDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LoanStartDate" class="control-label"></label>
-                <input asp-for="LoanStartDate" class="form-control" />
+                <input asp-for="LoanStartDate" type="hidden" class="form-control" />
                 <span asp-validation-for="LoanStartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LoanDueDate" class="control-label"></label>
-                <input asp-for="LoanDueDate" class="form-control" />
+                <input asp-for="LoanDueDate" type="hidden" class="form-control" />
                 <span asp-validation-for="LoanDueDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ReturnDate" class="control-label"></label>
-                <input asp-for="ReturnDate" class="form-control" />
+                <input asp-for="ReturnDate" type="hidden" class="form-control" />
                 <span asp-validation-for="ReturnDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Reserve" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-controller="Inventory" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
