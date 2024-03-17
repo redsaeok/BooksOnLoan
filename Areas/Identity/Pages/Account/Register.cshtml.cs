@@ -98,6 +98,49 @@ namespace BooksOnLoan.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            [Display(Name = "Mobile Number")]
+            public string MobileNumber { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            [Display(Name = "Street Address 1")]
+            public string StreetAddressOne { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Street Address 2")]
+            public string StreetAddressTwo { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string City { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+            public string Province { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [StringLength(7, ErrorMessage = "The {0} must be 7 characters long.", MinimumLength = 7)]
+            public string PostalCode { get; set; }
         }
 
 
@@ -113,7 +156,21 @@ namespace BooksOnLoan.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                //var user = CreateUser();
+
+                var user = new CustomUser
+                {
+                    UserName = Input.Email,
+                    Email = Input.Email,
+                    MobileNumber = Input.MobileNumber,
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    StreetAddressOne = Input.StreetAddressOne,
+                    StreetAddressTwo = Input.StreetAddressTwo,
+                    City = Input.City,
+                    Province = Input.Province,
+                    PostalCode = Input.PostalCode
+                };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

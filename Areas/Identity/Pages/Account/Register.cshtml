@@ -12,6 +12,49 @@
             <h2>Create a new account.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.FirstName" class="form-control" autocomplete="firstname" aria-required="true" placeholder="First Name"/>
+                <label asp-for="Input.FirstName"></label>
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.LastName" class="form-control" autocomplete="lastname" aria-required="true" placeholder="Last Name"/>
+                <label asp-for="Input.LastName"></label>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.MobileNumber" class="form-control" autocomplete="tel" aria-required="true" placeholder="Mobile Number" />
+                <label asp-for="Input.MobileNumber"></label>
+                <span asp-validation-for="Input.MobileNumber" class="text-danger"></span>                
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.StreetAddressOne" class="form-control" autocomplete="street-address" aria-required="true" placeholder="Street Address" />
+                <label asp-for="Input.StreetAddressOne"></label>
+                <span asp-validation-for="Input.StreetAddressOne" class="text-danger"></span>                
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.StreetAddressTwo" class="form-control" autocomplete="street-address" placeholder="Street Address 2" />
+                <label asp-for="Input.StreetAddressTwo"></label>
+                <span asp-validation-for="Input.StreetAddressTwo" class="text-danger"></span>                
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.City" class="form-control" autocomplete="address-level2" aria-required="true" placeholder="City" />
+                <label asp-for="Input.City"></label>
+                <span asp-validation-for="Input.City" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Province" class="form-control" autocomplete="address-level1" aria-required="true" placeholder="Province" />
+                <label asp-for="Input.Province"></label>    
+                <span asp-validation-for="Input.Province" class="text-danger"></span>                                
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PostalCode" class="form-control" autocomplete="postal-code" aria-required="true" placeholder="Postal Code" />
+                <label asp-for="Input.PostalCode"></label>
+                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+            </div>
+
+
             <div class="form-floating mb-3">
                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label asp-for="Input.Email">Email</label>

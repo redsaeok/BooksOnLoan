@@ -65,10 +65,10 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<ApplicationDbContext>();
     context.Database.Migrate();
 
-    //var userMgr = services.GetRequiredService<UserManager<CustomUser>>();
-    //var roleMgr = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userMgr = services.GetRequiredService<UserManager<CustomUser>>();
+    var roleMgr = services.GetRequiredService<RoleManager<CustomRole>>();
 
-    //IdentitySeedData.Initialize(context, userMgr, roleMgr).Wait();
+    IdentitySeedData.Initialize(context, userMgr, roleMgr).Wait();
 }
 
 app.MapRazorComponents<App>()
