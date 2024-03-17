@@ -4,6 +4,44 @@
 
 #!markdown
 
+# Submission Notes
+
+Please find my Assignment 01 - BooksOnLoan attached.
+
+You can interact with it online here: https://booksonloan.azurewebsites.net/
+
+My Git repo is here: https://github.com/redsaeok/BooksOnLoan/
+
+The application contains two custom screens, catalog and transactions, that were generated with the code generator and then customised for the admin and member use cases. 
+
+The Catalog screen lists all books in the inventory including their quantity and the number available.  Members can reserve a book from the Catalog, if a copy is available, creating a new transaction with a hold date.  Admins can add, delete, and edit books.
+
+The Transaction screen lists current active transactions.  Admins will see all books that are overdue and give them the option to send a follow-up e-mail.  Overdue books are those whose due date is before today.  I coded three e-mail options, a controller that uses data from the database, a pop-up window with BootStrap, and a MailTo option.  Admins can also edit transactions.  Members can see the books that they have on hold, and a list of the books delivered to them.  They can return the books they have out.
+
+A loan will work like this:
+
+1. A Member requests a reservation hold from the catalog; this creates a transaction with a hold date.
+
+2. An Admin can deliver on the hold; this sets the loan start, and loan end dates on the transaction.
+
+3. A Member can return the book; this sets the return date on the transaction.
+
+There were a couple additions I added because I wasn't quite clear on the specifications of the assignment,
+
+- A Member cannot create a request to hold a book if there isn't a copy available
+
+- Members receive a popup "email" if they have an overdue book. [Pretty sure this was meant to be admin only]
+
+- Admins have a few ways to send e-mail including a Controller, a BootStrap PopUp and a MailTo.  [This part was made clear, but I didn't want to remove the other options in case I wanted to refer back to them later]
+
+Thank you in advance for taking the time to evaluate my submission and providing feedback.
+
+Best regards,
+
+John Glenn
+
+#!markdown
+
 # Creating the Project
 
 #!markdown

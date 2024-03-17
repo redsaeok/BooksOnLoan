@@ -11,18 +11,19 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BooksOnLoan.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240218174801_M2")]
-    partial class M2
+    [Migration("20240317180644_m1")]
+    partial class m1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
 
             modelBuilder.Entity("BooksOnLoan.Models.Book", b =>
                 {
                     b.Property<int>("CodeNumber")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Author")
@@ -95,18 +96,51 @@ namespace BooksOnLoan.Data.Migrations
                     b.Property<int>("BookCodeNumber")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateOnly>("EndDate")
+                    b.Property<DateOnly>("HoldDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly>("StartDate")
+                    b.Property<DateOnly?>("LoanDueDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateOnly?>("LoanStartDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateOnly?>("ReturnDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("TransactionId");
 
+                    b.HasIndex("BookCodeNumber");
+
                     b.ToTable("Transaction", (string)null);
+                });
+
+            modelBuilder.Entity("BooksOnLoan.Models.TransactionType", b =>
+                {
+                    b.Property<int>("TransactionTypeID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("TransactionTypeID");
+
+                    b.ToTable("TransactionType", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TransactionTypeID = 1,
+                            Description = "Loan"
+                        },
+                        new
+                        {
+                            TransactionTypeID = 2,
+                            Description = "Return"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -319,6 +353,17 @@ namespace BooksOnLoan.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("BooksOnLoan.Models.Transaction", b =>
+                {
+                    b.HasOne("BooksOnLoan.Models.Book", "Book")
+                        .WithMany("Transactions")
+                        .HasForeignKey("BookCodeNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -368,6 +413,11 @@ namespace BooksOnLoan.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BooksOnLoan.Models.Book", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

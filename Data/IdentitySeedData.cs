@@ -2,14 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BooksOnLoan.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace BooksOnLoan.Data;
 
 public class IdentitySeedData
 {
+    /*
     public static async Task Initialize(ApplicationDbContext context,
-        UserManager<IdentityUser> userManager,
+        UserManager<CustomUser> userManager,
         RoleManager<IdentityRole> roleManager)
     {
         context.Database.EnsureCreated();
@@ -30,28 +32,18 @@ public class IdentitySeedData
 
         if (await userManager.FindByNameAsync("aa@aa.aa") == null)
         {
-            var user = new IdentityUser
+            var user = new CustomUser
             {
                 UserName = "aa@aa.aa",
-                Email = "aa@aa.aa",
-                PhoneNumber = "6902341234"
-            };
-
-            var result = await userManager.CreateAsync(user);
-            if (result.Succeeded)
-            {
-                await userManager.AddPasswordAsync(user, password4all);
-                await userManager.AddToRoleAsync(user, asdminRole);
-            }
-        }
-
-        if (await userManager.FindByNameAsync("bb@bb.bb") == null)
-        {
-            var user = new IdentityUser
-            {
-                UserName = "bb@bb.bb",
-                Email = "bb@bb.bb",
-                PhoneNumber = "7788951456"
+                Email = "aa@aa.aa",                
+                MobileNumber = "6902341234",
+                FirstName = "Alice",
+                LastName = "Adams",
+                StreetAddressOne = "123 Main St",
+                StreetAddressTwo = "",
+                City = "Vancouver",
+                Province = "BC",
+                PostalCode = "V6A 1A1"                
             };
 
             var result = await userManager.CreateAsync(user);
@@ -64,11 +56,18 @@ public class IdentitySeedData
 
         if (await userManager.FindByNameAsync("mm@mm.mm") == null)
         {
-            var user = new IdentityUser
+            var user = new CustomUser
             {
                 UserName = "mm@mm.mm",
-                Email = "mm@mm.mm",
-                PhoneNumber = "6572136821"
+                Email = "mm@mm.mm",                
+                MobileNumber = "6572136821",
+                FirstName = "Maggie",
+                LastName = "Mason",
+                StreetAddressOne = "456 Main St",
+                StreetAddressTwo = "",
+                City = "Vancouver",
+                Province = "BC",
+                PostalCode = "V6A 1A1"
             };
 
             var result = await userManager.CreateAsync(user);
@@ -79,21 +78,6 @@ public class IdentitySeedData
             }
         }
 
-        if (await userManager.FindByNameAsync("dd@dd.dd") == null)
-        {
-            var user = new IdentityUser
-            {
-                UserName = "dd@dd.dd",
-                Email = "dd@dd.dd",
-                PhoneNumber = "6041234567"
-            };
-
-            var result = await userManager.CreateAsync(user);
-            if (result.Succeeded)
-            {
-                await userManager.AddPasswordAsync(user, password4all);
-                await userManager.AddToRoleAsync(user, memberRole);
-            }
-        }
     }
+    */
 }

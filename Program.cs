@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using BooksOnLoan.Data;
+using BooksOnLoan.Components;
+using BooksOnLoan.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(
@@ -15,12 +18,18 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     {
         options.Stores.MaxLengthForKeys = 128;
     })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()    
     .AddDefaultUI()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddRoles<IdentityRole>()
+    .AddRoleManager<RoleManager<IdentityRole>>();    
 
 builder.Services.AddControllersWithViews();
+
+builder.Services
+    .AddRazorComponents()
+    .AddInteractiveServerComponents()
+    .AddCircuitOptions(options => options.DetailedErrors = true); // for debugging razor components
 
 var app = builder.Build();
 
@@ -40,6 +49,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAntiforgery();
 
 app.UseAuthentication();  // we must authentication before we can authorize
 app.UseAuthorization();
@@ -49,16 +59,19 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-using (var scope = app.Services.CreateScope()) {
+using (var scope = app.Services.CreateScope())
+{
     var services = scope.ServiceProvider;
 
-    var context = services.GetRequiredService<ApplicationDbContext>();    
+    var context = services.GetRequiredService<ApplicationDbContext>();
     context.Database.Migrate();
 
-    var userMgr = services.GetRequiredService<UserManager<IdentityUser>>();  
-    var roleMgr = services.GetRequiredService<RoleManager<IdentityRole>>();  
+    //var userMgr = services.GetRequiredService<UserManager<CustomUser>>();
+    //var roleMgr = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-    IdentitySeedData.Initialize(context, userMgr, roleMgr).Wait();
+    //IdentitySeedData.Initialize(context, userMgr, roleMgr).Wait();
 }
 
+app.MapRazorComponents<App>()
+.AddInteractiveServerRenderMode();
 app.Run();
