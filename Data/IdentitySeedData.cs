@@ -9,25 +9,25 @@ namespace BooksOnLoan.Data;
 
 public class IdentitySeedData
 {
-    /*
+    
     public static async Task Initialize(ApplicationDbContext context,
         UserManager<CustomUser> userManager,
-        RoleManager<IdentityRole> roleManager)
+        RoleManager<CustomRole> roleManager)
     {
         context.Database.EnsureCreated();
 
-        string asdminRole = "Admin";
+        string adminRole = "Admin";
         string memberRole = "Member";
         string password4all = "P@$$w0rd";
 
-        if (await roleManager.FindByNameAsync(asdminRole) == null)
+        if (await roleManager.FindByNameAsync(adminRole) == null)
         {
-            await roleManager.CreateAsync(new IdentityRole(asdminRole));
+            await roleManager.CreateAsync(new CustomRole(adminRole));
         }
 
         if (await roleManager.FindByNameAsync(memberRole) == null)
         {
-            await roleManager.CreateAsync(new IdentityRole(memberRole));
+            await roleManager.CreateAsync(new CustomRole(memberRole));
         }
 
         if (await userManager.FindByNameAsync("aa@aa.aa") == null)
@@ -50,7 +50,7 @@ public class IdentitySeedData
             if (result.Succeeded)
             {
                 await userManager.AddPasswordAsync(user, password4all);
-                await userManager.AddToRoleAsync(user, asdminRole);
+                await userManager.AddToRoleAsync(user, adminRole);
             }
         }
 
@@ -79,5 +79,5 @@ public class IdentitySeedData
         }
 
     }
-    */
+    
 }

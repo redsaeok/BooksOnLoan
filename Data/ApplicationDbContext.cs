@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BooksOnLoan.Data;
 
-public class ApplicationDbContext : IdentityDbContext<IdentityUser,IdentityRole,string>
+public class ApplicationDbContext : IdentityDbContext<CustomUser,CustomRole,string>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

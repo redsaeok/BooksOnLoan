@@ -13,7 +13,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(
+builder.Services.AddIdentity<CustomUser, CustomRole>(
     options =>
     {
         options.Stores.MaxLengthForKeys = 128;
@@ -21,8 +21,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     .AddEntityFrameworkStores<ApplicationDbContext>()    
     .AddDefaultUI()
     .AddDefaultTokenProviders()
-    .AddRoles<IdentityRole>()
-    .AddRoleManager<RoleManager<IdentityRole>>();    
+    .AddRoles<CustomRole>();  
 
 builder.Services.AddControllersWithViews();
 
