@@ -1,0 +1,25 @@
+﻿@model IEnumerable<CustomUser>
+@{
+    ViewData["Title"] = "Roles";
+    var userManager = ViewBag.UserManager as Microsoft.AspNetCore.Identity.UserManager<CustomUser>;
+}
+
+<div class="text-center">
+    <h1 class="display-4">All Users</h1>
+</div>
+
+<table class="table table-sm table-bordered table-bordered">
+    <tr><th>ID</th><th>Name</th><th>Admin</th><th>Patron</th></tr>
+    @foreach (var user in Model)
+    {
+        bool isInAdminRole = await userManager!.IsInRoleAsync(user, "Admin");
+        bool isInMemberRole = await userManager!.IsInRoleAsync(user, "Member");
+
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Email</td>
+            <td>@isInAdminRole</td>
+            <td>@isInMemberRole</td>
+        </tr>
+    }
+</table>

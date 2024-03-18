@@ -18,9 +18,9 @@ public class ApplicationDbContext : IdentityDbContext<CustomUser,CustomRole,stri
 
         #region "Seed Data"
 
-        builder.Entity<IdentityRole>().HasData(
-            new { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
-            new { Id = "2", Name = "Member", NormalizedName = "MEMBER" }
+        builder.Entity<CustomRole>().HasData(
+            new { Id = "1", Name = "Admin", NormalizedName = "ADMIN", CreatedDate = DateTime.Now, Description="Collection Administrator"},
+            new { Id = "2", Name = "Member", NormalizedName = "MEMBER", CreatedDate = DateTime.Now, Description="Patron" }
         );
 
         builder.Entity<Book>().ToTable("Book");
@@ -37,4 +37,5 @@ public class ApplicationDbContext : IdentityDbContext<CustomUser,CustomRole,stri
     public DbSet<Book>? Inventory { get; set; }
     public DbSet<TransactionType>? TransactionTypes { get; set; }
     public DbSet<Transaction>? Transactions { get; set; }
+
 }
