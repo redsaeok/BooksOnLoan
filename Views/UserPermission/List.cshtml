@@ -5,21 +5,21 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">All Users</h1>
+    <h1 class="display-4">User Permissions for All Users</h1>
 </div>
 
 <table class="table table-sm table-bordered table-bordered">
-    <tr><th>ID</th><th>Name</th><th>Admin</th><th>Patron</th></tr>
+    <tr><th>E-Mail</th><th>Admin</th><th>Patron</th><th>Edit</th></tr>
     @foreach (var user in Model)
     {
         bool isInAdminRole = await userManager!.IsInRoleAsync(user, "Admin");
         bool isInMemberRole = await userManager!.IsInRoleAsync(user, "Member");
 
         <tr>
-            <td>@user.Id</td>
             <td>@user.Email</td>
             <td>@isInAdminRole</td>
             <td>@isInMemberRole</td>
+            <td><a asp-controller="UserPermission" asp-action="Edit" asp-route-id="@user.Id">Edit</a></td>
         </tr>
     }
 </table>
