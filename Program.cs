@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using BooksOnLoan.Data;
 using BooksOnLoan.Components;
 using BooksOnLoan.Models;
+using BooksOnLoan.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ builder.Services.AddLogging(builder =>
 {
     builder.AddConsole(); // Add console logging
 });
+
+builder.Services.AddSingleton<QuoteOfTheDayService>();
 
 var app = builder.Build();
 
