@@ -19,6 +19,8 @@
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BooksOnLoan.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/_content/Radzen.Blazor/css/material-base.css">
+    
 
     <base href="~/" />
     <component type="typeof(Microsoft.AspNetCore.Components.Web.HeadOutlet)" render-mode="ServerPrerendered" />
@@ -179,6 +181,7 @@
         crossorigin="anonymous"></script-->
 
     <script src="_framework/blazor.web.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 

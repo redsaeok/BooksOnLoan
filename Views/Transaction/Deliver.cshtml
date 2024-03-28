@@ -3,6 +3,14 @@
 @{
     ViewData["Title"] = "Deliver";
     var book = ViewData["Book"] as Book;    
+
+    DateTime loanStartDateValue = DateTime.Now;
+    DateTime loanDueDateValue = DateTime.Now.AddMonths(1);
+
+    ViewDataDictionary<Transaction> viewData = ViewData;
+    var metadata = viewData.ModelMetadata;
+    string loanStartDateDisplayName = metadata.Properties[nameof(Transaction.LoanStartDate)]!.DisplayName ?? "Loan Start Date";    
+    string loanDueDateDisplayName = metadata.Properties[nameof(Transaction.LoanDueDate)]!.DisplayName ?? "Loan Due Date";    
 }
 
 <h1>Deliver</h1>
@@ -33,13 +41,27 @@
             <input asp-for="HoldDate" type="hidden" value="@Model.HoldDate" class="form-control" />
             <input asp-for="ReturnDate" type="hidden" class="form-control" />
             <div class="form-group">
+                @*
                 <label asp-for="LoanStartDate" class="control-label"></label>
                 <input asp-for="LoanStartDate" value='@DateTime.Now.ToString("MM-dd-yyyy")' class="form-control" />
+                *@
+                <component type="typeof(DatePicker)" render-mode="ServerPrerendered" 
+                    param-Label=@Convert.ToString("Loan Start")
+                    param-FieldName="@Convert.ToString("LoanStartDate")" 
+                    param-Value="@loanStartDateValue.ToString("MM-dd-yyyy")" />
+
                 <span asp-validation-for="LoanStartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
+                @*
                 <label asp-for="LoanDueDate" class="control-label"></label>
                 <input asp-for="LoanDueDate" value='@DateTime.Now.AddMonths(1).ToString("MM-dd-yyyy")' class="form-control" />
+                *@
+                <component type="typeof(DatePicker)" render-mode="ServerPrerendered" 
+                    param-Label="@loanDueDateDisplayName" 
+                    param-FieldName="@Convert.ToString("LoanDueDate")" 
+                    param-Value="@loanDueDateValue.ToString("MM-dd-yyyy")" />
+
                 <span asp-validation-for="LoanDueDate" class="text-danger"></span>
             </div>
             <div class="form-group">

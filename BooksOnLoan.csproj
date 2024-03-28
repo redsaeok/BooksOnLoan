@@ -26,7 +26,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1" />
-    <PackageReference Include="Radzen.Blazor" Version="4.27.1" />
+    <PackageReference Include="Radzen.Blazor" Version="4.28.9" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,13 @@
 
 @{
     ViewData["Title"] = "Deliver";
-    var book = ViewData["Book"] as Book;    
+    var book = ViewData["Book"] as Book;  
+
+    DateTime loanReturnDateValue = DateTime.Now;
+
+    ViewDataDictionary<Transaction> viewData = ViewData;
+    var metadata = viewData.ModelMetadata;
+    string loanReturnDateDisplayName = metadata.Properties[nameof(Transaction.ReturnDate)]!.DisplayName ?? "Return Date";    
 }
 
 <h1>Return</h1>
@@ -35,8 +41,15 @@
             <input asp-for="LoanDueDate" type="hidden" value="@Model.LoanDueDate" class="form-control" />
 
             <div class="form-group">
+                @*
                 <label asp-for="ReturnDate" class="control-label"></label>
                 <input asp-for="ReturnDate" value='@DateTime.Now.ToString("MM-dd-yyyy")' class="form-control" />
+                *@
+                <component type="typeof(DatePicker)" render-mode="ServerPrerendered" 
+                    param-Label=@loanReturnDateDisplayName
+                    param-FieldName="@Convert.ToString("LoanReturnDate")" 
+                    param-Value="@loanReturnDateValue.ToString("MM-dd-yyyy")" />
+
                 <span asp-validation-for="ReturnDate" class="text-danger"></span>
             </div>
             <div class="form-group">

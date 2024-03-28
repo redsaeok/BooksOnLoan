@@ -1,0 +1,37 @@
+@rendermode InteractiveServer
+@inject ILogger<ItemList> Logger
+
+@{
+    Logger.LogInformation($"DatePicker: {FieldName}");
+    Logger.LogInformation($"DatePicker: {Label}");    
+    Logger.LogInformation($"DatePicker: {Value}");    
+
+    if(String.IsNullOrEmpty(Value))
+    {
+        //value = DateTime.Now;
+        value = null;           
+    }
+    else
+    {
+        //value = DateTime.Parse(Value);
+        value = DateTime.ParseExact(Value, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+    }
+}
+
+<div class="rz-p-12 rz-text-align-center">
+    <RadzenLabel Text="@Label" Component="RadzenDatePickerBindValue" Style="margin-right: 8px; vertical-align: middle;" />
+    <RadzenDatePicker @bind-Value=@value DateFormat="MM-dd-yyyy" Name="@FieldName" ShowCalendarWeek />
+</div>
+
+@code {    
+    DateTime? value = DateTime.Now;
+
+    [Parameter]
+    public String? FieldName { get; set; }    
+
+    [Parameter]
+    public String? Label { get; set; }    
+
+    [Parameter]
+    public String? Value { get; set; }        
+}
