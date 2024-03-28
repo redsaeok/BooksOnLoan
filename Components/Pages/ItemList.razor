@@ -1,0 +1,105 @@
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject ApplicationDbContext DbContext
+@inject ILogger<ItemList> Logger
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@{
+    var query = DbContext.Transactions!
+    .Where(t => t.ReturnDate == null)
+    .GroupBy(t => t.BookCodeNumber)
+    .Select(g => new
+    {
+        Book = g.Key,
+        TransactionCount = g.Count()
+    });
+
+    Dictionary<int, int> bookTransactionCounts = new Dictionary<int, int>();
+    foreach (var item in query)
+    {
+        bookTransactionCounts.Add(item.Book, item.TransactionCount);
+    }
+
+    Dictionary<int, int> booksAvailable = new Dictionary<int, int>();
+    foreach (var book in DbContext.Inventory!)
+    {
+        if (bookTransactionCounts.ContainsKey(book.CodeNumber))
+        {
+            booksAvailable.Add(book.CodeNumber, book.Quantity - bookTransactionCounts[book.CodeNumber]);
+        }
+        else
+        {
+            booksAvailable.Add(book.CodeNumber, book.Quantity);
+        }
+    }
+}
+
+<h3>Items List</h3>
+
+
+
+<QuickGrid Items="@Items" class="table table-striped" Pagination="@pagination">
+    <PropertyColumn IsDefaultSortColumn="true" Sortable="true" Property="@(p => p.Title)" Title="Title" />
+    <PropertyColumn Sortable="true" Property="@(p => p.Author)" Title="Author" />
+    <PropertyColumn Sortable="true" Property="@(p => p.YearPublished)" Title="Year Published" />
+    <PropertyColumn Sortable="true" Property="@(p => p.Quantity)" Title="Quantity" />
+    <TemplateColumn Sortable="true" Title="Available">
+        <div>@booksAvailable[context.CodeNumber]</div>
+    </TemplateColumn>
+    <TemplateColumn Title="Reserve">
+        @if (booksAvailable[context.CodeNumber] > 0 && isMember)
+        {
+            <a href="/Transaction/Reserve/@context.CodeNumber">Reserve</a>
+        }
+        else if ( isAdmin )
+        {
+            <a href="/Inventory/Edit/@context.CodeNumber">Edit</a> 
+            <a href="/Inventory/Details/@context.CodeNumber">Details</a> 
+            <a href="/Inventory/Delete/@context.CodeNumber">Delete</a>
+        }
+    </TemplateColumn>
+</QuickGrid>
+<Paginator State="@pagination" />
+
+@code {
+    IQueryable<Book> Items = new List<Book>().AsQueryable();
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    private AuthenticationState? authState;
+
+    private bool isMember = false;
+    private bool isAdmin = false;
+
+
+    // Inject IJSRuntime to perform JavaScript interop
+    [Inject]
+    private IJSRuntime? JSRuntime { get; set; }
+
+    // Method to call JavaScript function to log to console
+    private async Task LogToConsole(string message)
+    {
+        // Call the JavaScript function using JavaScript interop
+        await JSRuntime!.InvokeVoidAsync("consoleInterop.log", message);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch items from the database using the DbContext
+        List<Book> Books = await DbContext.Inventory!.ToListAsync();
+        Items = Books.AsQueryable();
+        //await LogToConsole("Items loaded from the database!");
+        Logger.LogInformation("Items loaded from the database!");
+
+        authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;    
+
+        if( user is not null && user.Identity is not null && user.Identity.IsAuthenticated)
+        {
+            isMember = user.IsInRole("Member");
+            isAdmin = user.IsInRole("Admin");
+        }
+
+    }
+
+
+}

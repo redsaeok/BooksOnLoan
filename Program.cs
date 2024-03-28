@@ -18,17 +18,23 @@ builder.Services.AddIdentity<CustomUser, CustomRole>(
     {
         options.Stores.MaxLengthForKeys = 128;
     })
-    .AddEntityFrameworkStores<ApplicationDbContext>()    
+    .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI()
     .AddDefaultTokenProviders()
-    .AddRoles<CustomRole>();  
+    .AddRoles<CustomRole>();
 
 builder.Services.AddControllersWithViews();
+
 
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddCircuitOptions(options => options.DetailedErrors = true); // for debugging razor components
+
+builder.Services.AddLogging(builder =>
+{
+    builder.AddConsole(); // Add console logging
+});
 
 var app = builder.Build();
 
@@ -73,4 +79,6 @@ using (var scope = app.Services.CreateScope())
 
 app.MapRazorComponents<App>()
 .AddInteractiveServerRenderMode();
+
+
 app.Run();
