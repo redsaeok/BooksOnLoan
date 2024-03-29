@@ -2,29 +2,48 @@
 @inject ILogger<ItemList> Logger
 
 @{
-    Logger.LogInformation($"DatePicker: {FieldName}");
-    Logger.LogInformation($"DatePicker: {Label}");    
-    Logger.LogInformation($"DatePicker: {Value}");    
+    Logger.LogInformation($"DatePicker: Fieldname: {FieldName}");
+    Logger.LogInformation($"DatePicker: Label: {Label}");    
+    Logger.LogInformation($"DatePicker: Input Value: {Value}");    
+    Logger.LogInformation($"DatePicker: Output value before load: {value}"); 
 
-    if(String.IsNullOrEmpty(Value))
+    bool isValidDate = DateTime.TryParseExact(
+        Value,
+        "MM-dd-yyyy",
+        System.Globalization.CultureInfo.InvariantCulture,
+        System.Globalization.DateTimeStyles.None,
+        out _);    
+
+    // set the component date value if it isn't already set and we have one to set it to
+    if( value == DateTime.MinValue && isValidDate)
     {
-        //value = DateTime.Now;
-        value = null;           
+        value = DateTime.ParseExact(Value!, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
     }
-    else
-    {
-        //value = DateTime.Parse(Value);
-        value = DateTime.ParseExact(Value, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-    }
+
+    //value = DateTime.ParseExact("10-27-1977", "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+    //Logger.LogInformation($"DatePicker: {isValidDate}");
+    Logger.LogInformation($"DatePicker: Output value after load {value}");
 }
 
+
 <div class="rz-p-12 rz-text-align-center">
-    <RadzenLabel Text="@Label" Component="RadzenDatePickerBindValue" Style="margin-right: 8px; vertical-align: middle;" />
-    <RadzenDatePicker @bind-Value=@value DateFormat="MM-dd-yyyy" Name="@FieldName" ShowCalendarWeek />
+    <RadzenLabel 
+        Text="@Label" 
+        Component="RadzenDatePickerBindValue" 
+        Style="margin-right: 8px; vertical-align: middle;" 
+    />
+
+    <RadzenDatePicker 
+        @bind-Value=@value 
+        DateFormat="MM-dd-yyyy" 
+        Name="@FieldName"
+        ShowCalendarWeek 
+        Change=@OnChange
+    />
 </div>
 
-@code {    
-    DateTime? value = DateTime.Now;
+@code {
+    DateTime value;
 
     [Parameter]
     public String? FieldName { get; set; }    
@@ -33,5 +52,14 @@
     public String? Label { get; set; }    
 
     [Parameter]
-    public String? Value { get; set; }        
+    public String? Value { get; set; }      
+
+    void OnChange(DateTime? newValue)
+    {
+        Logger.LogInformation($"DatePicker.OnChange Called");        
+        value = newValue ?? value;
+        Logger.LogInformation($"New Value: {newValue}");  
+        Logger.LogInformation($"Value: {value}");
+    }          
 }
+

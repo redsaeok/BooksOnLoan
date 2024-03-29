@@ -33,7 +33,7 @@
         new DataItem { Quarter = "Q4", Revenue = 294000 }
     };
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         var currentDate = DateOnly.FromDateTime(DateTime.Today);
 
