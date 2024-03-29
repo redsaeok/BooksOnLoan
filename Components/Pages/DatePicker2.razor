@@ -1,0 +1,13 @@
+@rendermode InteractiveServer
+@inject ILogger<ItemList> Logger
+
+
+<div class="rz-p-12 rz-text-align-center">
+    <RadzenLabel Text="Label" Component="RadzenDatePickerBindValue" Style="margin-right: 8px; vertical-align: middle;" />
+    <RadzenDatePicker @bind-Value=@value DateFormat="MM-dd-yyyy" Name="Test" ShowCalendarWeek />
+</div>
+
+@code {
+    DateTime? value;
+}
+
