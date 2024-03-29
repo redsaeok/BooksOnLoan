@@ -15,6 +15,9 @@
     var loanDueDateValue = Model.LoanDueDate != null ? Model.LoanDueDate?.ToString("MM-dd-yyyy") : "";
     var loanReturnDateValue = Model.ReturnDate != null ? Model.ReturnDate?.ToString("MM-dd-yyyy") : "";
 
+    var x=1;
+    x=x+1;
+
 
 }
 
@@ -83,7 +86,7 @@
                 <component type="typeof(DatePicker)" render-mode="ServerPrerendered" 
                     param-Label=@loanReturnDateDisplayName
                     param-FieldName="@Convert.ToString("LoanReturnDate")" 
-                    param-Value="@loanDueDateValue" />
+                    param-Value="@loanReturnDateValue" />
 
                 <span asp-validation-for="ReturnDate" class="text-danger"></span>
             </div>
