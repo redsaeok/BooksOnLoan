@@ -125,46 +125,7 @@
 {
     <component type="typeof(MyOverdueBooks)" render-mode="ServerPrerendered" />
 
-
-    <h2>Holds for for @User.Identity!.Name</h2>
-    <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HoldDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Book!.Title)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-
-
-        @foreach (var item in memberReserveBooks!)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Username)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HoldDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Book!.Title)
-                    </td>
-                    <td>                        
-                        <!--a asp-action="Return" asp-route-id="@item.TransactionId">Return</a-->
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
+    <component type="typeof(MyBookHolds)" render-mode="ServerPrerendered" />
 
     <component type="typeof(MyBooksOnLoan)" render-mode="ServerPrerendered" />
 
