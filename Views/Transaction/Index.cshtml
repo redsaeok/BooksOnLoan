@@ -123,6 +123,9 @@
 
 @if (User.IsInRole("Member"))
 {
+    <component type="typeof(MyOverdueBooks)" render-mode="ServerPrerendered" />
+
+
     <h2>Holds for for @User.Identity!.Name</h2>
     <table class="table table-striped">
     <thead>
@@ -165,46 +168,6 @@
 
     <component type="typeof(MyBooksOnLoan)" render-mode="ServerPrerendered" />
 
-@*
-<h2>Books out on loan for @User.Identity!.Name</h2>
-    <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LoanDueDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Book!.Title)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-
-
-        @foreach (var item in memberHasBooks!)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Username)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LoanDueDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Book!.Title)
-                    </td>
-                    <td>                        
-                        <a asp-action="Return" asp-route-id="@item.TransactionId">Return</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-*@
 }
 
 

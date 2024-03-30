@@ -7,7 +7,7 @@
 @inject AuthenticationStateProvider AuthenticationState
 
 
-<h2>My Books on Loan (@username)</h2>
+<h2>My Overdue Books (@username)</h2>
 
 <QuickGrid Items="@Items" class="table table-striped" Pagination="@pagination">
     <PropertyColumn IsDefaultSortColumn="true" Sortable="true" Property="@(p => p.LoanDueDate)" Title="Due" />
@@ -23,6 +23,9 @@
 
 @code {
     
+    @*IQueryable<Transaction> Items = new List<Transaction>().AsQueryable();*@
+    
+
     IQueryable<Transaction> Items = new List<Transaction>().AsQueryable();
 
     private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
@@ -43,6 +46,7 @@
                 .Where(t => t.Username == User.Identity!.Name)
                 .Where(t => t.ReturnDate.HasValue == false)
                 .Where(t => t.LoanStartDate.HasValue == true)
+                .Where(t => t.LoanDueDate < @DateOnly.FromDateTime(DateTime.Now))
                 .ToListAsync();
                 
         Items = Transactions.AsQueryable();
