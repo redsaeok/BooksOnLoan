@@ -63,7 +63,7 @@
                     <td>
                         <div class="float-right">
                         <a asp-controller="OverdueEmail" asp-action="SendOverdueNotice" asp-route-id="@item.TransactionId">Email Form</a>
-                        <a data-toggle="modal" data-target="#SendEmailModal" href="">Email Popup</a>
+                        <!--a data-toggle="modal" data-target="#SendEmailModal" href="">Email Popup</a-->
                         <a href="mailto:@item.Username?subject=Overdue Book - @item.Book!.Title&body=Please return your book.">Email MailTo</a>
                         <!--a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a-->
                         <a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a>
