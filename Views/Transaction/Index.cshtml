@@ -31,90 +31,10 @@
 
 @if (User.IsInRole("Admin"))
 {
-    <h2>Overdue Books</h2>
-    <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LoanDueDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Book!.Title)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in overdueTransactions!)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Username)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LoanDueDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Book!.Title)
-                    </td>
-                    <td>
-                        <div class="float-right">
-                        <a asp-controller="OverdueEmail" asp-action="SendOverdueNotice" asp-route-id="@item.TransactionId">Email Form</a>
-                        <!--a data-toggle="modal" data-target="#SendEmailModal" href="">Email Popup</a-->
-                        <a href="mailto:@item.Username?subject=Overdue Book - @item.Book!.Title&body=Please return your book.">Email MailTo</a>
-                        <!--a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a-->
-                        <a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.TransactionId">Details</a>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <component type="typeof(AllOverdueBooks)" render-mode="ServerPrerendered" />
 
+    <component type="typeof(AllBookHolds)" render-mode="ServerPrerendered" />
 
-    <h2>New Requests</h2>
-    <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.HoldDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Book!.Title)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in requestTransactions!)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Username)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.HoldDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Book!.Title)
-                    </td>
-                    <td>
-                        <a asp-action="Deliver" asp-route-id="@item.TransactionId">Deliver</a>
-                        <a asp-action="Delete" asp-route-id="@item.TransactionId">Delete</a>
-                        <a asp-action="Edit" asp-route-id="@item.TransactionId">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.TransactionId">Details</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
 }
 
@@ -129,6 +49,7 @@
 
     <component type="typeof(MyBooksOnLoan)" render-mode="ServerPrerendered" />
 
+    <component type="typeof(MyLoanHistory)" render-mode="ServerPrerendered" />
 }
 
 
