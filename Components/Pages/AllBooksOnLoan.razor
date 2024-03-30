@@ -1,0 +1,52 @@
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@inject ILogger<ItemList> Logger
+@inject ApplicationDbContext DbContext
+@inject IHttpContextAccessor HttpContextAccessor
+@inject AuthenticationStateProvider AuthenticationState
+
+
+<h2>All Books on Loan</h2>
+
+<QuickGrid Items="@Items" class="table table-striped" Pagination="@pagination">
+    <PropertyColumn IsDefaultSortColumn="true" Sortable="true" Property="@(p => p.LoanDueDate)" Title="Due" />
+    <PropertyColumn Sortable="true" Property="@(p => p.Book!.Title)" Title="Title" />
+
+    <TemplateColumn Title="Return">
+        <a href="/Transaction/Return/@context.TransactionId">Return</a>
+    </TemplateColumn>
+</QuickGrid>
+
+<Paginator State="@pagination" />
+
+
+@code {
+    
+    IQueryable<Transaction> Items = new List<Transaction>().AsQueryable();
+
+    private PaginationState pagination = new PaginationState { ItemsPerPage = 10 };
+    
+    private bool MemberHasBooks = false;
+    
+    private string username = "Unknown";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var User = HttpContextAccessor.HttpContext!.User;
+        username = User.Identity!.Name ?? "Unknown";
+
+        List<Transaction> Transactions = 
+            await DbContext.Transactions!
+                .Include(t => t.Book)
+                .Where(t => t.ReturnDate.HasValue == false)
+                .Where(t => t.LoanStartDate.HasValue == true)
+                .ToListAsync();
+                
+        Items = Transactions.AsQueryable();
+
+        MemberHasBooks = Items.ToList().Count > 0;
+        
+    }
+}
