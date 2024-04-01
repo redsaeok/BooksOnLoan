@@ -10,4 +10,14 @@
     <p>Thank you for evaluating my COMP 4602 Assignment 02.  - John Glenn A00777452.</p>
 </div>
 
+@if( 
+    User is not null && 
+    User.Identity is not null && 
+    User.Identity.IsAuthenticated && 
+    !User.IsInRole("Admin") && 
+    !User.IsInRole("Member"))
+{
+<P>Please wait for an admin to review your account.</P>
+}
+
 <component type="typeof(BooksOnLoan.Components.Pages.QuoteOfTheDay)" render-mode="ServerPrerendered" />

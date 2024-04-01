@@ -327,7 +327,8 @@ namespace BooksOnLoan.Controllers
         [Authorize]
         public async Task<IActionResult> Return(int? id)
         {
-            if (User.IsInRole("Member") is false)
+            // only allow members or admins to return books
+            if (User.IsInRole("Member") is false && User.IsInRole("Admin") is false)
             {
                 return NotFound();
             }
@@ -355,6 +356,12 @@ namespace BooksOnLoan.Controllers
             }
 
             var book = _context.Inventory.Find(transaction.BookCodeNumber);
+
+            // only allow admins or the member who has the book to return it
+            if( !User.IsInRole("Admin") && User.IsInRole("Member") && transaction.Username != User.Identity.Name)
+            {
+                return NotFound();
+            }
 
             ViewData["TransactionID"] = transaction.TransactionId;
             ViewData["BookCodeNumber"] = transaction.BookCodeNumber;
